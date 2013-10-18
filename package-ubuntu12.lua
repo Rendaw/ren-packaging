@@ -1,11 +1,13 @@
 #!/usr/bin/lua
 
+local Root = arg[0]:match '(.+[/\\]).-'
+
 if not Architecture then Architecture = 'i386' end
 
-dofile 'packageinclude.lua'
+dofile(Root .. 'package.inc.lua')
 
 _G.arg = nil
-dofile '../../../info.lua'
+dofile(Root .. '../info.inc.lua')
 
 if #Executables > 0 then
 	local Dest = Info.PackageName .. '/usr/bin'

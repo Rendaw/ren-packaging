@@ -4,7 +4,7 @@ local Scripts =
 {
 	['arch64'] = Item 'package-arch64.lua',
 	['ubuntu'] = Item 'package-ubuntu.lua',
-	['ubuntu64'] = Item 'package-ubuntu_64.lua'
+	['ubuntu64'] = Item 'package-ubuntu64.lua'
 }
 
 Define.Package = function(Arguments)

@@ -12,28 +12,28 @@ dofile(Root .. '../info.inc.lua')
 if #Executables > 0 then
 	local Dest = Info.PackageName .. '/usr/bin'
 	os.execute('mkdir -p ' .. Dest)
-	for File in ipairs(Executables) do os.execute('cp ' .. File .. ' ' .. Dest) end
+	for Index, File in ipairs(Executables) do os.execute('cp ' .. File .. ' ' .. Dest) end
 end
 if #Libraries > 0 then
 	local Dest = Info.PackageName .. '/usr/lib'
 	os.execute('mkdir -p ' .. Dest)
-	for File in ipairs(Libraries) do os.execute('cp ' .. File .. ' ' .. Dest) end
+	for Index, File in ipairs(Libraries) do os.execute('cp ' .. File .. ' ' .. Dest) end
 end
 if #Resources > 0 then
 	local Dest = Info.PackageName .. '/usr/share/' .. Info.PackageName
 	os.execute('mkdir -p ' .. Dest)
-	for File in ipairs(Resources) do os.execute('cp ' .. File .. ' ' .. Dest) end
+	for Index, File in ipairs(Resources) do os.execute('cp ' .. File .. ' ' .. Dest) end
 end
 if #Licenses > 0 then
 	local Dest = Info.PackageName .. '/usr/share/doc/' .. Info.PackageName
 	os.execute('mkdir -p ' .. Dest)
-	for File in ipairs(Licenses) do os.execute('cp ' .. File .. ' ' .. Dest) end
+	for Index, File in ipairs(Licenses) do os.execute('cp ' .. File .. ' ' .. Dest) end
 end
 
 local InstalledSize = io.popen('du -s -BK ' .. Info.PackageName):read():gsub('[^%d].*$', '')
 print('Installed size is ' .. InstalledSize)
 
-os.execute('mkdir -p ' .. Info.PackageName .. '/DEBIAN')
+if not os.execute('mkdir -p ' .. Info.PackageName .. '/DEBIAN') then os.exit(1) end
 io.open(Info.PackageName .. '/DEBIAN/control', 'w+'):write([[
 Package: ]] .. Info.PackageName .. '\n' .. [[
 Version: ]] .. Info.Version .. '\n' .. [[
@@ -47,6 +47,7 @@ Installed-Size: ]] .. InstalledSize .. '\n' .. [[
 Homepage: ]] .. Info.Website .. '\n' .. [[
 ]]):close()
 
-os.execute('fakeroot dpkg --build ' .. Info.PackageName .. ' .')
-os.execute('rm -r ' .. Info.PackageName)
+if not os.execute('fakeroot dpkg --build ' .. Info.PackageName .. ' .') then os.exit(1) end
+if not os.execute('cp ' .. Info.PackageName .. '/DEBIAN/control packagedef.txt') then os.exit(1) end
+if not os.execute('rm -r ' .. Info.PackageName) then os.exit(1) end
 

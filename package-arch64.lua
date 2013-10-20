@@ -54,6 +54,6 @@ package() {
 if not os.execute('mkdir temp/src') then os.exit(1) end
 if not os.execute('cd temp && makepkg --nodeps --repackage --noextract --nocheck --force') then os.exit(1) end
 if not os.execute('cp temp/' .. Info.PackageName .. '-' .. tostring(Info.Version) .. '-1-x86_64.pkg.tar.xz .') then os.exit(1) end
-if not os.execute('cp temp/PKGBUILD .') then os.exit(1) end
+if not os.execute('cp temp/PKGBUILD packagedef.txt') then os.exit(1) end
 if not os.execute('rm -r temp') then os.exit(1) end
 

@@ -60,7 +60,7 @@ Define.Package = function(Arguments)
 		Define.Lua
 		{
 			Inputs = Inputs,
-			Outputs = Item() + Output + 'PKGBUILD',
+			Outputs = Item() + Output + 'packagedef.txt',
 			Script = tostring(Script),
 			Arguments = table.concat(ScriptArguments, ' ')
 		}

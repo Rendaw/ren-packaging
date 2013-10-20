@@ -18,7 +18,7 @@ Arch =
 	Dependencies = {} -- In the form 'pkg>=version' as from 'pacman -Q'
 }
 
-Ubuntu12 =
+Ubuntu =
 {
 	Section = '',
 	Dependencies = {} -- In the form 'pkg (>= version)' as from trial and error

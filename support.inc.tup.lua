@@ -3,17 +3,17 @@ DoOnce 'info.inc.lua'
 local Scripts =
 {
 	['arch64'] = Item 'package-arch64.lua',
-	['ubuntu12'] = Item 'package-ubuntu12.lua',
-	['ubuntu12_64'] = Item 'package-ubuntu12_64.lua'
+	['ubuntu12'] = Item 'package-ubuntu.lua',
+	['ubuntu12_64'] = Item 'package-ubuntu_64.lua'
 }
 
 Define.Package = function(Arguments)
 	local Output
 	if tup.getconfig('PLATFORM') == 'arch64'
 		then Output = ('%s-%d-1-x86_64.pkg.tar.xz'):format(Info.PackageName, Info.Version)
-	elseif tup.getconfig('PLATFORM') == 'ubuntu12'
+	elseif tup.getconfig('PLATFORM') == 'ubuntu'
 		then Output = ('%s_%d_i386.deb'):format(Info.PackageName, Info.Version)
-	elseif tup.getconfig('PLATFORM') == 'ubuntu12_64'
+	elseif tup.getconfig('PLATFORM') == 'ubuntu64'
 		then Output = ('%s_%d_amd64.deb'):format(Info.PackageName, Info.Version)
 	end
 	if not Output then error('Unknown platform ' .. tup.getconfig('PLATFORM')) end

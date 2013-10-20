@@ -3,8 +3,8 @@ DoOnce 'info.inc.lua'
 local Scripts =
 {
 	['arch64'] = Item 'package-arch64.lua',
-	['ubuntu12'] = Item 'package-ubuntu.lua',
-	['ubuntu12_64'] = Item 'package-ubuntu_64.lua'
+	['ubuntu'] = Item 'package-ubuntu.lua',
+	['ubuntu64'] = Item 'package-ubuntu_64.lua'
 }
 
 Define.Package = function(Arguments)

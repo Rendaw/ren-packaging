@@ -9,14 +9,14 @@ local Scripts =
 
 Define.Package = function(Arguments)
 	local Output
-	if tup.getconfig('PLATFORM') == 'arch64'
+	if tup.getconfig 'PLATFORM' == 'arch64'
 		then Output = ('%s-%d-1-x86_64.pkg.tar.xz'):format(Info.PackageName, Info.Version)
-	elseif tup.getconfig('PLATFORM') == 'ubuntu'
+	elseif tup.getconfig 'PLATFORM' == 'ubuntu'
 		then Output = ('%s_%d_i386.deb'):format(Info.PackageName, Info.Version)
-	elseif tup.getconfig('PLATFORM') == 'ubuntu64'
+	elseif tup.getconfig 'PLATFORM' == 'ubuntu64'
 		then Output = ('%s_%d_amd64.deb'):format(Info.PackageName, Info.Version)
 	end
-	if not Output then error('Unknown platform ' .. tup.getconfig('PLATFORM')) end
+	if not Output then error('Unknown platform \'' .. tup.getconfig 'PLATFORM' .. '\'') end
 	if IsTopLevel()
 	then
 		local Inputs = Item()
@@ -54,8 +54,8 @@ Define.Package = function(Arguments)
 				do ScriptArguments[#ScriptArguments + 1] = File end
 		end
 
-		local Script = Scripts[tup.getconfig('PLATFORM')]
-		if not Script then error('Unknown platform ' .. tup.getconfig('PLATFORM')) end
+		local Script = Scripts[tup.getconfig 'PLATFORM']
+		if not Script then error('Unknown platform \'' .. tup.getconfig 'PLATFORM' .. '\'') end
 
 		Define.Lua
 		{

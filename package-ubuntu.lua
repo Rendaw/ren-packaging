@@ -9,14 +9,17 @@ dofile(Root .. 'package.inc.lua')
 _G.arg = nil
 dofile(Root .. '../info.inc.lua')
 
+local Stem = Name .. '-temp/' .. Name
+Shell('mkdir -p ' .. Stem)
+
 local Place = function(Filenames, Destination, Disambig)
 	if #Filenames == 0 then return end
-	os.execute('mkdir -p ' .. Name .. '$pkgdir' .. Destination)
+	Shell('mkdir -p ' .. Stem .. Destination)
 	for Index, Filename in ipairs(Filenames)
 	do
 		local DestFilename = Filename:gsub('[^/\\]*[/\\]', '')
 		if Disambig then DestFilename = Disambig .. DestFilename end
-		os.execute('cp ' .. Filename .. ' ' .. Destination .. '/' .. DestFilename)
+		Shell('cp ' .. Filename .. ' ' .. Stem .. Destination .. '/' .. DestFilename)
 	end
 end
 
@@ -25,11 +28,11 @@ Place(Libraries, '/usr/lib')
 Place(Resources, '/usr/share/' .. Info.ProjectName)
 Place(Licenses, '/usr/share/doc/' .. Info.ProjectName, Name .. '-')
 
-local InstalledSize = io.popen('du -s -BK ' .. Name):read():gsub('[^%d].*$', '')
+local InstalledSize = io.popen('du -s -BK ' .. Stem):read():gsub('[^%d].*$', '')
 print('Installed size is ' .. InstalledSize)
 
-if not os.execute('mkdir -p ' .. Name .. '/DEBIAN') then os.exit(1) end
-io.open(Name .. '/DEBIAN/control', 'w+'):write([[
+Shell('mkdir -p ' .. Stem .. '/DEBIAN')
+io.open(Stem .. '/DEBIAN/control', 'w+'):write([[
 Package: ]] .. Name .. '\n' .. [[
 Version: ]] .. Info.Version .. '\n' .. [[
 Section: ]] .. DebianSection .. '\n' .. [[
@@ -42,7 +45,8 @@ Installed-Size: ]] .. InstalledSize .. '\n' .. [[
 Homepage: ]] .. Info.Website .. '\n' .. [[
 ]]):close()
 
-if not os.execute('fakeroot dpkg --build ' .. Name .. ' .') then os.exit(1) end
-if not os.execute('cp ' .. Name .. '/DEBIAN/control ' .. Name .. '-def.txt') then os.exit(1) end
-if not os.execute('rm -r ' .. Name) then os.exit(1) end
+Shell('cd ' .. Name .. '-temp && fakeroot dpkg --build ' .. Name .. ' .')
+Shell('cp ' .. Name .. '-temp/' .. Name .. '_' .. tostring(Info.Version) .. '_' .. Architecture .. '.deb .')
+Shell('cp ' .. Stem .. '/DEBIAN/control ' .. Name .. '-def.txt')
+Shell('rm -r ' .. Name .. '-temp')
 

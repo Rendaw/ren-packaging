@@ -21,7 +21,7 @@ local ScriptSituation = function(Filenames, Destination, Disambig)
 		table.concat(Out)
 end
 
-if not os.execute('mkdir temp') then os.exit(1) end
+Shell('mkdir temp')
 io.open('temp/PKGBUILD', 'w+'):write([[
 pkgname=]] .. Name .. '\n' .. [[
 pkgver=]] .. Info.Version .. '\n' .. [[
@@ -55,9 +55,9 @@ package() {
 }
 ]]):close()
 
-if not os.execute('mkdir temp/src') then os.exit(1) end
-if not os.execute('cd temp && makepkg --nodeps --repackage --noextract --nocheck --force') then os.exit(1) end
-if not os.execute('cp temp/' .. Name .. '-' .. tostring(Info.Version) .. '-1-x86_64.pkg.tar.xz .') then os.exit(1) end
-if not os.execute('cp temp/PKGBUILD ' .. Name .. '-def.txt') then os.exit(1) end
-if not os.execute('rm -r temp') then os.exit(1) end
+Shell('mkdir temp/src')
+Shell('cd temp && makepkg --nodeps --repackage --noextract --nocheck --force')
+Shell('cp temp/' .. Name .. '-' .. tostring(Info.Version) .. '-1-x86_64.pkg.tar.xz .')
+Shell('cp temp/PKGBUILD ' .. Name .. '-def.txt')
+Shell('rm -r temp')
 

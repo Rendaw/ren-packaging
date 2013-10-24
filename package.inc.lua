@@ -1,3 +1,8 @@
+function Shell(Command)
+	print(Command)
+	if not os.execute(Command) then os.exit(1) end
+end
+
 Name = nil
 Dependencies = nil
 ArchLicenseStyle = nil

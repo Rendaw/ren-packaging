@@ -1,23 +1,33 @@
+Name = nil
+Dependencies = nil
+ArchLicenseStyle = nil
+DebianSection = nil
 Executables = {}
 Libraries = {}
 Resources = {}
 Licenses = {}
 
+local States =
+{
+	['--Dependencies'] = function(Argument) Dependencies = Argument end,
+	['--ArchLicenseStyle'] = function(Argument) ArchLicenseStyle = Argument end,
+	['--DebianSection'] = function(Argument) DebianSection = Argument end,
+	['--Executables'] = function(Argument) Executables[#Executables + 1] = Argument end,
+	['--Libraries'] = function(Argument) Libraries[#Libraries + 1] = Argument end,
+	['--Resources'] = function(Argument) Resources[#Resources + 1] = Argument end,
+	['--Licenses'] = function(Argument) Licenses[#Licenses + 1] = Argument end
+}
+
 local ArgState
 for Index = 1, #arg
 do
 	local Argument = arg[Index]
-	if (Argument == '--Executables') or
-		(Argument == '--Libraries') or
-		(Argument == '--Resources') or
-		(Argument == '--Licenses')
-	then ArgState = Argument
-	elseif not ArgState then error 'First state unspecified.'
-	elseif ArgState == '--Executables' then Executables[#Executables + 1] = Argument
-	elseif ArgState == '--Libraries' then Libraries[#Libraries + 1] = Argument
-	elseif ArgState == '--Resources' then Resources[#Resources + 1] = Argument
-	elseif ArgState == '--Licenses' then Licenses[#Licenses + 1] = Argument
-	else error 'Unknown state.'
+	if States[Argument] then ArgState = States[Argument]
+	elseif not ArgState
+	then
+		if Name then error('Unknown argument parse state at argument \'' .. Argument .. '\'.') end
+		Name = Argument
+	else ArgState(Argument)
 	end
 end
 

@@ -9,45 +9,40 @@ dofile(Root .. 'package.inc.lua')
 _G.arg = nil
 dofile(Root .. '../info.inc.lua')
 
-if #Executables > 0 then
-	local Dest = Info.PackageName .. '/usr/bin'
-	os.execute('mkdir -p ' .. Dest)
-	for Index, File in ipairs(Executables) do os.execute('cp ' .. File .. ' ' .. Dest) end
-end
-if #Libraries > 0 then
-	local Dest = Info.PackageName .. '/usr/lib'
-	os.execute('mkdir -p ' .. Dest)
-	for Index, File in ipairs(Libraries) do os.execute('cp ' .. File .. ' ' .. Dest) end
-end
-if #Resources > 0 then
-	local Dest = Info.PackageName .. '/usr/share/' .. Info.PackageName
-	os.execute('mkdir -p ' .. Dest)
-	for Index, File in ipairs(Resources) do os.execute('cp ' .. File .. ' ' .. Dest) end
-end
-if #Licenses > 0 then
-	local Dest = Info.PackageName .. '/usr/share/doc/' .. Info.PackageName
-	os.execute('mkdir -p ' .. Dest)
-	for Index, File in ipairs(Licenses) do os.execute('cp ' .. File .. ' ' .. Dest) end
+local Place = function(Filenames, Destination, Disambig)
+	if #Filenames == 0 then return end
+	os.execute('mkdir -p ' .. Name .. '$pkgdir' .. Destination)
+	for Index, Filename in ipairs(Filenames)
+	do
+		local DestFilename = Filename:gsub('[^/\\]*[/\\]', '')
+		if Disambig then DestFilename = Disambig .. DestFilename end
+		os.execute('cp ' .. Filename .. ' ' .. Destination .. '/' .. DestFilename)
+	end
 end
 
-local InstalledSize = io.popen('du -s -BK ' .. Info.PackageName):read():gsub('[^%d].*$', '')
+Place(Executables, '/usr/bin')
+Place(Libraries, '/usr/lib')
+Place(Resources, '/usr/share/' .. Info.ProjectName)
+Place(Licenses, '/usr/share/doc/' .. Info.ProjectName, Name .. '-')
+
+local InstalledSize = io.popen('du -s -BK ' .. Name):read():gsub('[^%d].*$', '')
 print('Installed size is ' .. InstalledSize)
 
-if not os.execute('mkdir -p ' .. Info.PackageName .. '/DEBIAN') then os.exit(1) end
-io.open(Info.PackageName .. '/DEBIAN/control', 'w+'):write([[
-Package: ]] .. Info.PackageName .. '\n' .. [[
+if not os.execute('mkdir -p ' .. Name .. '/DEBIAN') then os.exit(1) end
+io.open(Name .. '/DEBIAN/control', 'w+'):write([[
+Package: ]] .. Name .. '\n' .. [[
 Version: ]] .. Info.Version .. '\n' .. [[
-Section: ]] .. Ubuntu.Section .. '\n' .. [[
+Section: ]] .. DebianSection .. '\n' .. [[
 Priority: Optional
 Architecture: ]] .. Architecture .. '\n' .. [[
-Depends: ]] .. table.concat(Ubuntu.Dependencies, ', ') .. '\n' .. [[
+Depends: ]] .. (Dependencies or '') .. '\n' .. [[
 Maintainer: ]] .. Info.Author .. ' <' .. Info.EMail .. [[>
 Description: ]] .. Info.ExtendedDescription .. '\n' .. [[
 Installed-Size: ]] .. InstalledSize .. '\n' .. [[
 Homepage: ]] .. Info.Website .. '\n' .. [[
 ]]):close()
 
-if not os.execute('fakeroot dpkg --build ' .. Info.PackageName .. ' .') then os.exit(1) end
-if not os.execute('cp ' .. Info.PackageName .. '/DEBIAN/control packagedef.txt') then os.exit(1) end
-if not os.execute('rm -r ' .. Info.PackageName) then os.exit(1) end
+if not os.execute('fakeroot dpkg --build ' .. Name .. ' .') then os.exit(1) end
+if not os.execute('cp ' .. Name .. '/DEBIAN/control ' .. Name .. '-def.txt') then os.exit(1) end
+if not os.execute('rm -r ' .. Name) then os.exit(1) end
 

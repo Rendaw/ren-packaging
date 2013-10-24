@@ -10,11 +10,11 @@ local Scripts =
 Define.Package = function(Arguments)
 	local Output
 	if tup.getconfig 'PLATFORM' == 'arch64'
-		then Output = ('%s-%d-1-x86_64.pkg.tar.xz'):format(Info.PackageName, Info.Version)
+		then Output = ('%s-%d-1-x86_64.pkg.tar.xz'):format(Arguments.Name, Info.Version)
 	elseif tup.getconfig 'PLATFORM' == 'ubuntu'
-		then Output = ('%s_%d_i386.deb'):format(Info.PackageName, Info.Version)
+		then Output = ('%s_%d_i386.deb'):format(Arguments.Name, Info.Version)
 	elseif tup.getconfig 'PLATFORM' == 'ubuntu64'
-		then Output = ('%s_%d_amd64.deb'):format(Info.PackageName, Info.Version)
+		then Output = ('%s_%d_amd64.deb'):format(Arguments.Name, Info.Version)
 	end
 	if not Output then error('Unknown platform \'' .. tup.getconfig 'PLATFORM' .. '\'') end
 	if IsTopLevel()
@@ -22,7 +22,18 @@ Define.Package = function(Arguments)
 		local Inputs = Item()
 		local ScriptArguments = {}
 
-		ScriptArguments[#Arguments + 1] = '--Executables'
+		ScriptArguments[#ScriptArguments + 1] = Arguments.Name
+
+		if Arguments.Dependencies
+			then ScriptArguments[#ScriptArguments + 1] = '--Dependencies "' .. Arguments.Dependencies .. '"' end
+
+		if Arguments.ArchLicenseStyle
+			then ScriptArguments[#ScriptArguments + 1] = '--ArchLicenseStyle ' .. Arguments.ArchLicenseStyle end
+
+		if Arguments.DebianSection
+			then ScriptArguments[#ScriptArguments + 1] = '--DebianSection ' .. Arguments.DebianSection end
+
+		ScriptArguments[#ScriptArguments + 1] = '--Executables'
 		if Arguments.Executables
 		then
 			Inputs = Inputs:Include(Arguments.Executables)
@@ -60,7 +71,7 @@ Define.Package = function(Arguments)
 		Define.Lua
 		{
 			Inputs = Inputs,
-			Outputs = Item() + Output + 'packagedef.txt',
+			Outputs = Item() + Output + (Arguments.Name .. '-def.txt'),
 			Script = tostring(Script),
 			Arguments = table.concat(ScriptArguments, ' ')
 		}

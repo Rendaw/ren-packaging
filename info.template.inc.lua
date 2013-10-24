@@ -1,6 +1,6 @@
-Info = 
+Info =
 {
-	PackageName = '',
+	ProjectName = '',
 	Company = '',
 	ShortDescription = '', -- One sentence
 	ExtendedDescription = '', -- Three sentences
@@ -10,18 +10,6 @@ Info =
 	CompanyWebsite = 'http://www.zarbosoft.com/',
 	Author = 'Rendaw',
 	EMail = 'spoo@zarbosoft.com'
-}
-
-Arch =
-{
-	LicenseStyle = 'BSD',
-	Dependencies = {} -- In the form 'pkg>=version' as from 'pacman -Q'
-}
-
-Ubuntu =
-{
-	Section = '',
-	Dependencies = {} -- In the form 'pkg (>= version)' as from trial and error
 }
 
 if arg and arg[1]

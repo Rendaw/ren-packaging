@@ -3,25 +3,30 @@ function Shell(Command)
 	if not os.execute(Command) then os.exit(1) end
 end
 
-Name = nil
-Dependencies = nil
-ArchLicenseStyle = nil
-DebianSection = nil
-Executables = {}
-Libraries = {}
-Resources = {}
-Licenses = {}
-
-local States =
-{
-	['--Dependencies'] = function(Argument) Dependencies = Argument end,
-	['--ArchLicenseStyle'] = function(Argument) ArchLicenseStyle = Argument end,
-	['--DebianSection'] = function(Argument) DebianSection = Argument end,
-	['--Executables'] = function(Argument) Executables[#Executables + 1] = Argument end,
-	['--Libraries'] = function(Argument) Libraries[#Libraries + 1] = Argument end,
-	['--Resources'] = function(Argument) Resources[#Resources + 1] = Argument end,
-	['--Licenses'] = function(Argument) Licenses[#Licenses + 1] = Argument end
-}
+local States = {}
+local StringState = function(Name)
+	States['--' .. Name] = function(Argument)
+		_G[Name] = Argument
+	end
+end
+local ArrayState = function(Name)
+	if not _G[Name] then _G[Name] = {} end
+	States['--' .. Name] = function(Argument)
+		table.insert(_G[Name], Argument)
+	end
+end
+StringState 'Dependencies'
+StringState 'ArchLicenseStyle'
+StringState 'DebianSection'
+ArrayState 'Executables'
+ArrayState 'Libraries'
+ArrayState 'Resources'
+ArrayState 'Licenses'
+StringState 'WIXIcon'
+StringState 'WIXTopBanner'
+StringState 'WIXSideBanner'
+ArrayState 'WIXExtraLicenses'
+StringState 'WIXUpgradeGUID'
 
 local ArgState
 for Index = 1, #arg

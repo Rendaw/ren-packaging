@@ -4,7 +4,8 @@ local Scripts =
 {
 	['arch64'] = Item 'package-arch64.lua',
 	['ubuntu'] = Item 'package-ubuntu.lua',
-	['ubuntu64'] = Item 'package-ubuntu64.lua'
+	['ubuntu64'] = Item 'package-ubuntu64.lua',
+	['windows'] = Item 'package-windows.lua'
 }
 
 Define.Package = function(Arguments)
@@ -15,8 +16,14 @@ Define.Package = function(Arguments)
 		then Output = ('%s_%d_i386.deb'):format(Arguments.Name, Info.Version)
 	elseif tup.getconfig 'PLATFORM' == 'ubuntu64'
 		then Output = ('%s_%d_amd64.deb'):format(Arguments.Name, Info.Version)
+	elseif tup.getconfig 'PLATFORM' == 'windows'
+		then Output = ('%s-%s-x86_64.msi'):format(Arguments.Name, Info.Version)
 	end
-	if not Output then error('Unknown platform \'' .. tup.getconfig 'PLATFORM' .. '\'') end
+	if not Output
+	then
+		print('Unknown platform \'' .. tup.getconfig 'PLATFORM' .. '\'')
+		return nil
+	end
 	if IsTopLevel()
 	then
 		local Inputs = Item()
@@ -24,45 +31,34 @@ Define.Package = function(Arguments)
 
 		ScriptArguments[#ScriptArguments + 1] = Arguments.Name
 
-		if Arguments.Dependencies
-			then ScriptArguments[#ScriptArguments + 1] = '--Dependencies "' .. Arguments.Dependencies .. '"' end
-
-		if Arguments.ArchLicenseStyle
-			then ScriptArguments[#ScriptArguments + 1] = '--ArchLicenseStyle ' .. Arguments.ArchLicenseStyle end
-
-		if Arguments.DebianSection
-			then ScriptArguments[#ScriptArguments + 1] = '--DebianSection ' .. Arguments.DebianSection end
-
-		ScriptArguments[#ScriptArguments + 1] = '--Executables'
-		if Arguments.Executables
-		then
-			Inputs = Inputs:Include(Arguments.Executables)
-			for Index, File in ipairs(Arguments.Executables:Form():Extract('Filename'))
-				do ScriptArguments[#ScriptArguments + 1] = File end
+		local StringArgument = function(Name)
+			if Arguments[Name]
+				then ScriptArguments[#ScriptArguments + 1] = '--' .. Name .. ' "' .. Arguments[Name] .. '"' end
+		end
+		local ArrayArgument = function(Name)
+			if Arguments[Name]
+			then
+				ScriptArguments[#ScriptArguments + 1] = '--' .. Name
+				Inputs = Inputs:Include(Arguments[Name])
+				for Index, File in ipairs(Arguments[Name]:Form():Extract('Filename'))
+					do ScriptArguments[#ScriptArguments + 1] = File end
+			end
 		end
 
-		ScriptArguments[#ScriptArguments + 1] = '--Libraries'
-		if Arguments.Libraries
+		StringArgument 'Dependencies'
+		StringArgument 'ArchLicenseStyle'
+		StringArgument 'DebianSection'
+		ArrayArgument 'Executables'
+		ArrayArgument 'Libraries'
+		ArrayArgument 'Resources'
+		ArrayArgument 'Licenses'
+		if tup.getconfig 'PLATFORM' == 'windows'
 		then
-			Inputs = Inputs:Include(Arguments.Libraries)
-			for Index, File in ipairs(Arguments.Libraries:Form():Extract('Filename'))
-				do ScriptArguments[#ScriptArguments + 1] = File end
-		end
-
-		ScriptArguments[#ScriptArguments + 1] = '--Resources'
-		if Arguments.Resources
-		then
-			Inputs = Inputs:Include(Arguments.Resources)
-			for Index, File in ipairs(Arguments.Resources:Form():Extract('Filename'))
-				do ScriptArguments[#ScriptArguments + 1] = File end
-		end
-
-		ScriptArguments[#ScriptArguments + 1] = '--Licenses'
-		if Arguments.Licenses
-		then
-			Inputs = Inputs:Include(Arguments.Licenses)
-			for Index, File in ipairs(Arguments.Licenses:Form():Extract('Filename'))
-				do ScriptArguments[#ScriptArguments + 1] = File end
+			StringArgument 'WIXTopBanner'
+			StringArgument 'WIXSideBanner'
+			ArrayArgument 'WIXExtraLicenses'
+			StringArgument 'WIXPackageGUID'
+			StringArgument 'WIXUpgradeGUID'
 		end
 
 		local Script = Scripts[tup.getconfig 'PLATFORM']

@@ -22,11 +22,8 @@ ArrayState 'Executables'
 ArrayState 'Libraries'
 ArrayState 'Resources'
 ArrayState 'Licenses'
-StringState 'WIXIcon'
-StringState 'WIXTopBanner'
-StringState 'WIXSideBanner'
-ArrayState 'WIXExtraLicenses'
-StringState 'WIXUpgradeGUID'
+ArrayState 'ExtraLibraries'
+ArrayState 'ExtraLicenses'
 
 local ArgState
 for Index = 1, #arg

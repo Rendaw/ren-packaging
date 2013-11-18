@@ -17,7 +17,7 @@ Define.Package = function(Arguments)
 	elseif tup.getconfig 'PLATFORM' == 'ubuntu64'
 		then Output = ('%s_%d_amd64.deb'):format(Arguments.Name, Info.Version)
 	elseif tup.getconfig 'PLATFORM' == 'windows'
-		then Output = ('%s-%s-x86_64.msi'):format(Arguments.Name, Info.Version)
+		then Output = ('%s-%s-x86_64.7z'):format(Arguments.Name, Info.Version)
 	end
 	if not Output
 	then
@@ -35,11 +35,11 @@ Define.Package = function(Arguments)
 			if Arguments[Name]
 				then ScriptArguments[#ScriptArguments + 1] = '--' .. Name .. ' "' .. Arguments[Name] .. '"' end
 		end
-		local ArrayArgument = function(Name)
+		local ArrayArgument = function(Name, Input)
 			if Arguments[Name]
 			then
 				ScriptArguments[#ScriptArguments + 1] = '--' .. Name
-				Inputs = Inputs:Include(Arguments[Name])
+				if Input then Inputs = Inputs:Include(Arguments[Name]) end
 				for Index, File in ipairs(Arguments[Name]:Form():Extract('Filename'))
 					do ScriptArguments[#ScriptArguments + 1] = File end
 			end
@@ -48,18 +48,12 @@ Define.Package = function(Arguments)
 		StringArgument 'Dependencies'
 		StringArgument 'ArchLicenseStyle'
 		StringArgument 'DebianSection'
-		ArrayArgument 'Executables'
-		ArrayArgument 'Libraries'
-		ArrayArgument 'Resources'
-		ArrayArgument 'Licenses'
-		if tup.getconfig 'PLATFORM' == 'windows'
-		then
-			StringArgument 'WIXTopBanner'
-			StringArgument 'WIXSideBanner'
-			ArrayArgument 'WIXExtraLicenses'
-			StringArgument 'WIXPackageGUID'
-			StringArgument 'WIXUpgradeGUID'
-		end
+		ArrayArgument('Executables', true)
+		ArrayArgument('Libraries', true)
+		ArrayArgument('Resources', true)
+		ArrayArgument('Licenses', true)
+		ArrayArgument 'ExtraLibraries'
+		ArrayArgument 'ExtraLicenses'
 
 		local Script = Scripts[tup.getconfig 'PLATFORM']
 		if not Script then error('Unknown platform \'' .. tup.getconfig 'PLATFORM' .. '\'') end

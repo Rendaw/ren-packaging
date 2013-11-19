@@ -12,12 +12,15 @@ local Here = io.popen('pwd'):read() .. '/'
 local FilenamePattern = ('%s-%s-x86_64'):format(Name, Info.Version)
 local TreeBase = 'temp/' .. FilenamePattern
 Shell('mkdir -p ' .. TreeBase)
+if (#ExtraQt5PlatformLibraries > 0) then Shell('mkdir -p ' .. TreeBase .. '/platform') end
 for Index, Executable in ipairs(Executables)
 	do Shell('cp ' .. Executable .. ' ' .. TreeBase) end
 for Index, Library in ipairs(Libraries)
 	do Shell('cp ' .. Library .. ' ' .. TreeBase) end
 for Index, Library in ipairs(ExtraLibraries)
 	do Shell('cp ' .. Library .. ' ' .. TreeBase) end
+for Index, Library in ipairs(ExtraQt5PlatformLibraries)
+	do Shell('cp ' .. Library .. ' ' .. TreeBase .. '/platform') end
 for Index, Resource in ipairs(Resources)
 	do Shell('cp ' .. Resource .. ' ' .. TreeBase) end
 for Index, License in ipairs(Licenses)

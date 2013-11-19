@@ -23,6 +23,7 @@ ArrayState 'Libraries'
 ArrayState 'Resources'
 ArrayState 'Licenses'
 ArrayState 'ExtraLibraries'
+ArrayState 'ExtraQt5PlatformLibraries'
 ArrayState 'ExtraLicenses'
 
 local ArgState

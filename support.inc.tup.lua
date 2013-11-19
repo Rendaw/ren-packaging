@@ -53,6 +53,7 @@ Define.Package = function(Arguments)
 		ArrayArgument('Resources', true)
 		ArrayArgument('Licenses', true)
 		ArrayArgument 'ExtraLibraries'
+		ArrayArgument 'ExtraQt5PlatformLibraries'
 		ArrayArgument 'ExtraLicenses'
 
 		local Script = Scripts[tup.getconfig 'PLATFORM']

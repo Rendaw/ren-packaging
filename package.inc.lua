@@ -24,6 +24,10 @@ ArrayState 'Resources'
 ArrayState 'Licenses'
 ArrayState 'ExtraLibraries'
 ArrayState 'ExtraQt5PlatformLibraries'
+ArrayState 'ExtraVLCPluginLibrariesDemux'
+ArrayState 'ExtraVLCPluginLibrariesAudioOutput'
+ArrayState 'ExtraVLCPluginLibrariesAudioMixer'
+ArrayState 'ExtraVLCPluginLibrariesCodec'
 ArrayState 'ExtraLicenses'
 
 local ArgState

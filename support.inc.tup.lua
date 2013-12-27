@@ -54,8 +54,10 @@ Define.Package = function(Arguments)
 		ArrayArgument('Licenses', true)
 		ArrayArgument 'ExtraLibraries'
 		ArrayArgument 'ExtraQt5PlatformLibraries'
+		ArrayArgument 'ExtraVLCPluginLibrariesAccess'
 		ArrayArgument 'ExtraVLCPluginLibrariesDemux'
 		ArrayArgument 'ExtraVLCPluginLibrariesAudioOutput'
+		ArrayArgument 'ExtraVLCPluginLibrariesAudioFilter'
 		ArrayArgument 'ExtraVLCPluginLibrariesAudioMixer'
 		ArrayArgument 'ExtraVLCPluginLibrariesCodec'
 		ArrayArgument 'ExtraLicenses'

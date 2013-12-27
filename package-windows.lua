@@ -23,6 +23,10 @@ if (#ExtraQt5PlatformLibraries > 0) then Shell('mkdir -p ' .. TreeBase .. '/plat
 for Index, Library in ipairs(ExtraQt5PlatformLibraries)
 	do Shell('cp ' .. Library .. ' ' .. TreeBase .. '/platforms') end
 
+if (#ExtraVLCPluginLibrariesAccess > 0) then Shell('mkdir -p ' .. TreeBase .. '/plugins/access') end
+for Index, Library in ipairs(ExtraVLCPluginLibrariesAccess)
+	do Shell('cp ' .. Library .. ' ' .. TreeBase .. '/plugins/access') end
+
 if (#ExtraVLCPluginLibrariesDemux > 0) then Shell('mkdir -p ' .. TreeBase .. '/plugins/demux') end
 for Index, Library in ipairs(ExtraVLCPluginLibrariesDemux)
 	do Shell('cp ' .. Library .. ' ' .. TreeBase .. '/plugins/demux') end
@@ -30,6 +34,10 @@ for Index, Library in ipairs(ExtraVLCPluginLibrariesDemux)
 if (#ExtraVLCPluginLibrariesAudioOutput > 0) then Shell('mkdir -p ' .. TreeBase .. '/plugins/audio_output') end
 for Index, Library in ipairs(ExtraVLCPluginLibrariesAudioOutput)
 	do Shell('cp ' .. Library .. ' ' .. TreeBase .. '/plugins/audio_output') end
+
+if (#ExtraVLCPluginLibrariesAudioFilter > 0) then Shell('mkdir -p ' .. TreeBase .. '/plugins/audio_filter') end
+for Index, Library in ipairs(ExtraVLCPluginLibrariesAudioFilter)
+	do Shell('cp ' .. Library .. ' ' .. TreeBase .. '/plugins/audio_filter') end
 
 if (#ExtraVLCPluginLibrariesAudioMixer > 0) then Shell('mkdir -p ' .. TreeBase .. '/plugins/audio_mixer') end
 for Index, Library in ipairs(ExtraVLCPluginLibrariesAudioMixer)
